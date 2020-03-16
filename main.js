@@ -5,7 +5,7 @@ let observacao = document.querySelector('#observacao')
 let insere = document.querySelector('#insere')
 let btnAPI = document.querySelector('#btnAPI')
 
-const KEY = '';
+let KEY = '';
 
 let clear = document.querySelector('#clear')
 let controlers = document.querySelector('#controlers')
@@ -13,15 +13,6 @@ let controlers = document.querySelector('#controlers')
 window.addEventListener('load', listar)
 clear.addEventListener('click', limpar)
 insere.addEventListener('click', inserir)
-btnAPI.addEventListener('click', api)
-
-//Coordenadas de Rio Grande;
-
-let longitude = '-32.054347';
-let latitude = '-52.127881';
-// Api Key Dark Sky
-const apiKey = 'a45eab351aad4add41b431ac4c7bebbe';
-const apiUrl = `https://api.darksky.net/forecast/${apiKey}/${longitude},${latitude}?units=ca`;
 
 let data = [];
 
@@ -72,8 +63,9 @@ function listar(){
         
         datas.forEach((element, index)=>{
 
+        if(KEY){    
         api(element.cidade,index)
-
+        }
 
 
         result.insertAdjacentHTML('beforeend', `
