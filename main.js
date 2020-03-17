@@ -17,13 +17,14 @@ insere.addEventListener('click', inserir)
 let data = [];
 
 
-//Incluir uma nova cidade ou atualizar já existente!
- function inserir(editar){
+//Incluir uma nova cidade 
+ function inserir(){
 
     editaControl=false;
-    if(cidade.value === '' || observacao.value === ''){ 
-        alert(`Campos vazios!`)
+    if(cidade.value === '' || cidade.value.length < 2){ 
+        alert(`The city is empty or its name is too short!`)
         limpaCampos()
+        cidade.focus()
         return
     } 
     
@@ -47,7 +48,6 @@ let data = [];
         limpaCampos()
         localStorage.setItem('data', JSON.stringify(datas))
     }
-    insere.innerHTML = 'Whats Up'
     listar()
     
 }
@@ -63,25 +63,29 @@ function listar(){
         
         datas.forEach((element, index)=>{
 
-        if(KEY){    
+        if(KEY)
+        {    
         api(element.cidade,index)
         }
-
+        
 
         result.insertAdjacentHTML('beforeend', `
         <div id="card">
         
             <div id="inner-card-up"> 
-                <h4 id="cidade_card">${element.cidade} </h4>
-                <span style="font-size: 25px"><i class="fa fa-cloud"></i></span>
-                <h3 id="temperatura${index}"></h3>
+                <h3 id="cidade_card${index}">${element.cidade}</h3>
+                <h4 id="temperatura${index}"></h4>
             </div>
-
+            
             <div id="inner-card-down">
             
             <div id="inner-card-down">
+            <p id="detalhes${index}"></p>
+            </div>   
+            
+            <div id="inner-card-down">
             <p id="observacoes_card">${element.observacao}</p>
-            </div>    
+            </div>  
 
             <div id="inner-card-down">
                 <span Onclick=excluir(${index}) style="font-size: 18px"><i class="fa fa-times-circle"></i></span>
@@ -108,9 +112,10 @@ function editar(e){
     observacao.value = datas[e].observacao;
     document.querySelector(`#iconEditar${e}`).className ='fa fa-check-circle';
     }else{
-        if(cidade.value === '' || observacao.value === ''){ 
-            alert(`Campos vazios!`)
+        if(cidade.value === '' || cidade.value.length < 2){ 
+            alert(`The city is empty or its name is too short!`)
             limpaCampos()
+            cidade.focus()
             return
         } 
         editaControl=false;
@@ -146,21 +151,28 @@ function limpaCampos(){
 //TESTES DE API
  let dados;
  function api(city, index){
-
-    fetch(`http://api.weatherstack.com/current?access_key=${KEY}&query=${city}`)
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${KEY}&lang=pt_br&units=metric`)
     .then((res)=>{
        return res.json()
-       
     }).then((json) =>{
         dados = json;
         console.log(`
-        Cidade - ${dados.location.name}
-        Estado - ${dados.location.region}
-        Pais - ${dados.location.country}
-        Temperatura ${dados.current.temperature}
-        Comentário ${dados.current.weather_descriptions}
+        País: ${dados.sys.country}
+        Temperatura: ${ dados.main.temp}
+        Sensação: ${dados.main.feels_like}
+        Humidade: ${dados.main.humidity}
+        Descrição: ${dados.weather[0].description} 
+        Time Zone: ${(dados.timezone/60)/60}
+        Hora: ${dados.dt}
         `)
-        document.querySelector(`#temperatura${index}`).innerHTML = dados.current.temperature;
+        document.querySelector(`#temperatura${index}`).innerHTML = `${dados.main.temp}°C`;
+        document.querySelector(`#cidade_card${index}`).innerHTML += `, ${dados.sys.country}`;
+        document.querySelector(`#detalhes${index}`).innerHTML = `${dados.weather[0].description.toUpperCase()}.`
     })
     
+       
 }
+
+//<span style="font-size: 25px"><i class="fa fa-cloud"></i></span>
+
+

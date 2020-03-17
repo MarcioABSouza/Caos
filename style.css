@@ -51,7 +51,7 @@ input{
 }
 
 #inner-card-down{
-    justify-content: space-around;
+    justify-content: space-between;
     flex-wrap: wrap;
     flex-direction: row;
     margin-bottom: 5px;
@@ -62,7 +62,8 @@ input{
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
   }
 
-#card h4{
+#card h3{
+    font-size: 20px;
     margin-bottom: 3px;
 }
 
