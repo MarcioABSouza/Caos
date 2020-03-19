@@ -51,7 +51,8 @@ input{
 }
 
 #inner-card-down{
-    justify-content: space-between;
+    display: flex;
+    justify-content: space-evenly;
     flex-wrap: wrap;
     flex-direction: row;
     margin-bottom: 5px;
@@ -67,3 +68,6 @@ input{
     margin-bottom: 3px;
 }
 
+p{
+    font-size: 12px;
+}

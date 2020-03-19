@@ -32,7 +32,7 @@ let data = [];
 
     if(localStorage.getItem('data')){
         datas = JSON.parse(localStorage.getItem('data'))  
-        datas.push({
+        datas.unshift({
             'cidade': cidade.value,
             'observacao': observacao.value
         })
@@ -41,7 +41,7 @@ let data = [];
         console.log(JSON.stringify(datas))
         }
     else{
-        datas.push({
+        datas.unshift({
             'cidade': cidade.value,
             'observacao': observacao.value
         })
@@ -78,18 +78,19 @@ function listar(){
             </div>
             
             <div id="inner-card-down">
-            
-            <div id="inner-card-down">
             <p id="detalhes${index}"></p>
             </div>   
             
-            <div id="inner-card-down">
+            <div id="inner-card-medium">
             <p id="observacoes_card">${element.observacao}</p>
             </div>  
 
             <div id="inner-card-down">
+                <h4 id="hora${index}"></h4>
+                <div>
                 <span Onclick=excluir(${index}) style="font-size: 18px"><i class="fa fa-times-circle"></i></span>
                 <span id="btnEditar${index}" Onclick=editar(${index}) style="font-size: 18px"><i  id="iconEditar${index}"class="fa fa-edit"></i></span>
+               </div>
             </div>
         
         </div>`)
@@ -150,29 +151,33 @@ function limpaCampos(){
 
 //TESTES DE API
  let dados;
+ let hora;
  function api(city, index){
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${KEY}&lang=pt_br&units=metric`)
     .then((res)=>{
        return res.json()
     }).then((json) =>{
         dados = json;
+        hora = new Date((Math.floor(new Date().getTime()/1000)+(dados.timezone))*1000).toUTCString()
         console.log(`
         País: ${dados.sys.country}
         Temperatura: ${ dados.main.temp}
         Sensação: ${dados.main.feels_like}
         Humidade: ${dados.main.humidity}
         Descrição: ${dados.weather[0].description} 
-        Time Zone: ${(dados.timezone/60)/60}
+        Time Zone: ${dados.timezone}
         Hora: ${dados.dt}
+        Hora no local: ${hora.slice(17,25)}
         `)
         document.querySelector(`#temperatura${index}`).innerHTML = `${dados.main.temp}°C`;
         document.querySelector(`#cidade_card${index}`).innerHTML += `, ${dados.sys.country}`;
         document.querySelector(`#detalhes${index}`).innerHTML = `${dados.weather[0].description.toUpperCase()}.`
+        document.querySelector(`#hora${index}`).innerHTML = ` ${hora.slice(17,25)}`;
     })
     
        
 }
 
-//<span style="font-size: 25px"><i class="fa fa-cloud"></i></span>
+//<span style="font-size: 25px"><i id="icone${index} class=""></i></span>
 
 
