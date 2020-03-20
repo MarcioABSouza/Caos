@@ -13,6 +13,11 @@ let controlers = document.querySelector('#controlers')
 window.addEventListener('load', listar)
 clear.addEventListener('click', limpar)
 insere.addEventListener('click', inserir)
+cidade.addEventListener('keyup', (e)=>{
+    if(e.keyCode ==13){
+        inserir()
+    }
+})
 
 let data = [];
 
@@ -52,7 +57,7 @@ let data = [];
     
 }
 
-//Listar cidades em localStorage
+//Listar 
 function listar(){
     result.innerHTML = '';
     limpaCampos()
@@ -70,14 +75,14 @@ function listar(){
         
 
         result.insertAdjacentHTML('beforeend', `
-        <div id="card">
+        <div id="card${index}" class="card">
         
             <div id="inner-card-up"> 
                 <h3 id="cidade_card${index}">${element.cidade}</h3>
                 <h4 id="temperatura${index}"></h4>
             </div>
             
-            <div id="inner-card-down">
+            <div id="inner-card-medium">
             <p id="detalhes${index}"></p>
             </div>   
             
@@ -88,8 +93,8 @@ function listar(){
             <div id="inner-card-down">
                 <h4 id="hora${index}"></h4>
                 <div>
-                <span Onclick=excluir(${index}) style="font-size: 18px"><i class="fa fa-times-circle"></i></span>
-                <span id="btnEditar${index}" Onclick=editar(${index}) style="font-size: 18px"><i  id="iconEditar${index}"class="fa fa-edit"></i></span>
+                <span Onclick=excluir(${index}) style="font-size: 25px"><i class="fa fa-times-circle"></i></span>
+                <span id="btnEditar${index}" Onclick=editar(${index}) style="font-size: 25px"><i  id="iconEditar${index}"class="fa fa-edit"></i></span>
                </div>
             </div>
         
@@ -173,6 +178,7 @@ function limpaCampos(){
         document.querySelector(`#cidade_card${index}`).innerHTML += `, ${dados.sys.country}`;
         document.querySelector(`#detalhes${index}`).innerHTML = `${dados.weather[0].description.toUpperCase()}.`
         document.querySelector(`#hora${index}`).innerHTML = ` ${hora.slice(17,25)}`;
+        document.querySelector(`#card${index}`).className = "card-show";
     })
     
        
