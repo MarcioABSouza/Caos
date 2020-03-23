@@ -79,10 +79,11 @@ function listar(){
         
             <div id="inner-card-up"> 
                 <h3 id="cidade_card${index}">${element.cidade}</h3>
+                <img id="icon${index}" src="">
                 <h4 id="temperatura${index}"></h4>
             </div>
             
-            <div id="inner-card-medium">
+            <div class="inner-card-medium" id="inner-card-medium${index}">
             <p id="detalhes${index}"></p>
             </div>   
             
@@ -154,36 +155,39 @@ function limpaCampos(){
 }
 
 
-//TESTES DE API
- let dados;
- let hora;
+//Chamando API 
+ let dados,hora;
+
  function api(city, index){
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${KEY}&lang=pt_br&units=metric`)
+    fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=48d5c83ce5c68b72bcd7900e669b8806&lang=pt_br&units=metric`)
     .then((res)=>{
        return res.json()
     }).then((json) =>{
         dados = json;
-        hora = new Date((Math.floor(new Date().getTime()/1000)+(dados.timezone))*1000).toUTCString()
+        hora = new Date((Math.floor(new Date().getTime()/1000)+(dados.city.timezone))*1000).toUTCString()
         console.log(`
-        País: ${dados.sys.country}
-        Temperatura: ${ dados.main.temp}
-        Sensação: ${dados.main.feels_like}
-        Humidade: ${dados.main.humidity}
-        Descrição: ${dados.weather[0].description} 
-        Time Zone: ${dados.timezone}
-        Hora: ${dados.dt}
-        Hora no local: ${hora.slice(17,25)}
+        Cidade: ${dados.city.name}
+        País: ${dados.city.country}
+        População: ${dados.city.population}
+        Time Zone: ${dados.city.timezone}
+        Temperatura atual: ${dados.list[0].main.temp}
+        Descrição atual: ${dados.list[0].weather[0].description}
+        Hora: ${hora}
         `)
-        document.querySelector(`#temperatura${index}`).innerHTML = `${dados.main.temp}°C`;
-        document.querySelector(`#cidade_card${index}`).innerHTML += `, ${dados.sys.country}`;
-        document.querySelector(`#detalhes${index}`).innerHTML = `${dados.weather[0].description.toUpperCase()}.`
+
+        document.querySelector(`#temperatura${index}`).innerHTML = `${dados.list[0].main.temp}°C`;
+        document.querySelector(`#cidade_card${index}`).innerHTML += `, ${dados.city.country}`;
+        document.querySelector(`#detalhes${index}`).innerHTML = `${dados.list[0].weather[0].description.toUpperCase()}.`;
         document.querySelector(`#hora${index}`).innerHTML = ` ${hora.slice(17,25)}`;
+        document.querySelector(`#card${index}`).className = "card-show";
+        document.querySelector(`#icon${index}`).src = `http://openweathermap.org/img/wn/${dados.list[0].weather[0].icon}.png`;  
+
+
+
+    }).catch((err)=>{
+        console.log(err)
         document.querySelector(`#card${index}`).className = "card-show";
     })
     
        
 }
-
-//<span style="font-size: 25px"><i id="icone${index} class=""></i></span>
-
-
