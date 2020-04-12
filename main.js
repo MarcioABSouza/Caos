@@ -3,6 +3,8 @@ let logo = document.querySelector('#logo')
 let cidade = document.querySelector('#cidade')
 let insere = document.querySelector('#insere')
 let btnAPI = document.querySelector('#btnAPI')
+let tempo = document.querySelector('#tempo')
+let mensagemPrincipal = 'Como está o tempo?';
 
 let KEY = '48d5c83ce5c68b72bcd7900e669b8806';
 
@@ -24,14 +26,16 @@ let data = [];
 
 //Incluir uma nova cidade 
  function inserir(){
+    if(editaControl){
+        alertSnackbar('Termine de editar o registro atual!')
+        return 
+    }
 
     editaControl=false;
 
     if(cidade.value === '' || cidade.value.length < 2){ 
-        alert(`The city is empty or its name is too short!`)
-        limpaCampos()
-        cidade.focus()
-        return
+        alertSnackbar('A cidade deve ter ao menos 3 letras!')
+       return
     } 
     
     let datas = [];   
@@ -44,13 +48,14 @@ let data = [];
         })
 
         if(cidadeJaExiste.length > 0){
-            alert(`Cidade ${cidade.value} já está cadastrada!`)
+            alertSnackbar(` ${cidade.value} já está cadastrada!`)
             limpaCampos()
             return}
 
 
         datas.unshift({
-            'cidade': cidade.value
+            'cidade': cidade.value,
+            'listar' : true
         })
         limpaCampos()
         localStorage.setItem('data', JSON.stringify(datas))
@@ -58,7 +63,8 @@ let data = [];
         }
     else{
         datas.unshift({
-            'cidade': cidade.value
+            'cidade': cidade.value,
+            'listar' : true
         })
         limpaCampos()
         localStorage.setItem('data', JSON.stringify(datas))
@@ -80,15 +86,25 @@ function listar(){
         //ITERAÇÂO 
         datas.forEach((element, index)=>{
 
-        if(KEY){    
+        
+
+        if(KEY && element.listar){    
         api(element.cidade,index).then((resp)=>{
             element.fuso = resp;
+            
+            if(!element.fuso){
+                alertSnackbar(`Não há dados para '${element.cidade}' ! `)
+                element.listar = false;
+                localStorage.setItem('data', JSON.stringify(datas))
+            }
+
         })
         }
         
+       
 
         result.insertAdjacentHTML('beforeend', `
-        <div id="card${index}" class="${KEY?"card":"card-show"}">
+        <div id="card${index}" class="${KEY && element.listar?"card":"card-show"}">
         
             <div id="inner-card-up"> 
             <img id="icon${index}" src="">
@@ -125,17 +141,38 @@ function editar(e){
     if(!editaControl){ 
     
     editaControl=true;
+
     cidade.value = datas[e].cidade;
-    document.querySelector(`#iconEditar${e}`).className ='fa fa-check-circle';
+
+    document.querySelector(`#iconEditar${e}`).className ='fa fa-check-circle greenCheck';
     }else{
-        if(cidade.value === '' || cidade.value.length < 2){ 
-            alert(`The city is empty or its name is too short!`)
+        if(cidade.value === '' || cidade.value.length < 3){ 
+            alertSnackbar('Insira ao menos 3 letras!')
             limpaCampos()
             cidade.focus()
+            document.querySelector(`#iconEditar${e}`).className ='fa fa-edit';
+            editaControl = false;
             return
         } 
+
+
+        let cidadeJaExiste = datas.filter((elem)=>{
+            return cidade.value == elem.cidade
+          })
+  
+          if(cidadeJaExiste.length > 0){
+              alertSnackbar(` ${cidade.value} já está cadastrada!`)
+              document.querySelector(`#iconEditar${e}`).className ='fa fa-edit';
+              editaControl = false;
+              limpaCampos()
+              return
+        }
+
+
+
         editaControl=false;
         datas[e].cidade = cidade.value;
+        datas[e].listar = true;
         document.querySelector(`#iconEditar${e}`).className ='fa fa-edit';
         localStorage.setItem('data', JSON.stringify(datas))
         limpaCampos()
@@ -145,6 +182,9 @@ function editar(e){
 }
 
 function excluir(e){
+
+    editaControl= false;
+    
     datas = JSON.parse(localStorage.getItem('data'))
     datas.splice(e, 1)
     localStorage.setItem('data', JSON.stringify(datas))
@@ -171,6 +211,16 @@ function atualizaHora(){
         }
         
     })
+}
+
+
+function alertSnackbar(mensagem){
+        
+    var x = document.getElementById("alertSnackbar"); 
+    x.innerHTML = mensagem;  
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+      
 }
 
 
@@ -213,6 +263,7 @@ function atualizaHora(){
         document.querySelector(`#icon${index}`).src = `http://openweathermap.org/img/wn/${dados.list[0].weather[0].icon}.png`;  
 
         fuso = dados.city.timezone;
+
 
     }).catch((err)=>{
         console.log(err)

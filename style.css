@@ -190,3 +190,46 @@ button{
 
 }
 
+#tempo{
+    transition: 0.5s;
+}
+
+.greenCheck{
+    font-size: 1.5rem;
+    color: chartreuse;
+    transition: 0.5s;
+}
+
+.warning{
+    color: red;
+}
+
+#alertSnackbar{
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    color : red;
+    border: 1px red solid;
+}
+
+#alertSnackbar.show {
+    visibility: visible; 
+    -webkit-animation: fadeinSnack 0.5s, fadeoutSnack 0.5s 2.5s;
+    animation: fadeinSnack 0.5s, fadeoutSnack 0.5s 2.5s;
+  }
+
+  @keyframes fadeinSnack {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+
+  @keyframes fadeoutSnack {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
