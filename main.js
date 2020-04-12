@@ -99,10 +99,10 @@ function listar(){
              
 
             <div id="inner-card-down">
-                <h4 id="hora${index}"></h4>
+                ${KEY?`<h4 id="hora${index}"></h4>`: ''}
                 <div>
-                <span Onclick=excluir(${index}) style="font-size: 20px"><i class="fa fa-times-circle"></i></span>
-                <span id="btnEditar${index}" Onclick=editar(${index}) style="font-size: 20px"><i  id="iconEditar${index}"class="fa fa-edit"></i></span>
+                <span Onclick=excluir(${index})><i class="fa fa-times-circle"></i></span>
+                <span id="btnEditar${index}" Onclick=editar(${index})><i  id="iconEditar${index}"class="fa fa-edit"></i></span>
                </div>
             </div>
         
